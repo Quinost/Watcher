@@ -1,0 +1,9 @@
+.maxSize {
+    width: 100%;
+    height: 100%;
+}
+
+.fullscreen-btn {
+    margin-top: 10px;
+    width: -webkit-fill-available;
+}

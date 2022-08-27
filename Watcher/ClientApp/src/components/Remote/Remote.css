@@ -1,0 +1,47 @@
+.button-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.slider-div {
+    display: flex;
+    width: 90%;
+    padding: 10px 20px;
+    align-self: center;
+}
+
+.time-span {
+    display: flex;
+    padding: 0px 15px;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.width-47 {
+    width: 47%;
+}
+
+button,
+input[type=text] {
+    height: 50px
+}
+
+button {
+    border: 1px solid white !important;
+    color: white !important;
+}
+
+label,
+input[type=text] {
+    color: white !important;
+}
+
+span {
+    overflow-wrap: break-word;
+}
