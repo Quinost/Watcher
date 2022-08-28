@@ -27,12 +27,17 @@
     width: 47%;
 }
 
+.self-center {
+    align-self: center;
+}
+
 button,
+a,
 input[type=text] {
     height: 50px
 }
 
-button {
+button, a {
     border: 1px solid white !important;
     color: white !important;
 }
@@ -44,4 +49,13 @@ input[type=text] {
 
 span {
     overflow-wrap: break-word;
+}
+
+.modal-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #282c34;
+    width: 100%;
 }

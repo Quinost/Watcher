@@ -9,23 +9,15 @@ export class ApiService {
     }
 
     async play(): Promise<void> {
-        return (await axios.get<void>(this.apiUrl + 'play')).data;
+        return (await axios.post<void>(this.apiUrl + 'play')).data;
     }
 
     async pause(): Promise<void> {
-        return (await axios.get<void>(this.apiUrl + 'pause')).data;
-    }
-
-    async mute(): Promise<void> {
-        return (await axios.get<void>(this.apiUrl + 'mute')).data;
-    }
-
-    async unMute(): Promise<void> {
-        return (await axios.get<void>(this.apiUrl + 'unmute')).data;
+        return (await axios.post<void>(this.apiUrl + 'pause')).data;
     }
 
     async requestOutFullscreen(): Promise<void> {
-        return (await axios.get<void>(this.apiUrl + 'request-out-fullscreen')).data;
+        return (await axios.post<void>(this.apiUrl + 'request-out-fullscreen')).data;
     }
 
     async load(url: string): Promise<UrlRequestResponse> {
@@ -38,6 +30,10 @@ export class ApiService {
 
     async getVolume(): Promise<number> {
         return (await axios.get<number>(this.apiUrl + 'volume')).data;
+    }
+
+    async shutdownWindows(): Promise<void> {
+        return (await axios.post<void>(this.apiUrl + 'shutdown-windows')).data;
     }
 }
 

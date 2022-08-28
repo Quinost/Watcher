@@ -60,7 +60,7 @@ export class HubService {
         this.hubConnection.on('RequestOutFullScreen', _ => {
             console.log('RequestOutFullScreen');
             this.requestOutFullScreen$.next()
-        });;;;
+        });
         this.hubConnection.on('Volume', x => {
             console.log('Volume: ' + x);
             this.volume$.next(x);

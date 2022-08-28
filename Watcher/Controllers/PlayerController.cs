@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Watcher.Singletons;
 
 namespace Watcher.Controllers;
@@ -27,13 +28,13 @@ public class PlayerController : ControllerBase
         return Ok(state.GetVolume);
     }
 
-    [HttpGet("play")]
+    [HttpPost("play")]
     public async Task PlayVideo()
     {
         await state.SetPlaying(true);
     }
 
-    [HttpGet("pause")]
+    [HttpPost("pause")]
     public async Task PauseVideo()
     {
         await state.SetPlaying(false);
@@ -50,10 +51,16 @@ public class PlayerController : ControllerBase
         return Ok(new UrlResponseRequest(state.GetSourceUrl));
     }
 
-    [HttpGet("request-out-fullscreen")]
+    [HttpPost("request-out-fullscreen")]
     public async Task RequestOutFullscreen()
     {
         await state.RequestOutFullscreen();
+    }
+
+    [HttpPost("shutdown-windows")]
+    public void ShutdownWindows()
+    {
+        Process.Start("shutdown", "/s /t 0");
     }
 }
 

@@ -7,6 +7,7 @@ import screenfull from 'screenfull'
 import './Player.css'
 import { forkJoin, tap } from 'rxjs';
 import Button from '@mui/material/Button';
+import { finalize } from 'rxjs/operators';
 
 export interface PlayerState {
     play: boolean;
@@ -34,7 +35,6 @@ class Player extends React.Component {
         super(props);
         this.apiService = new ApiService();
         this.hubService = new HubService();
-        this.hubService.connect('player');
         this.mapSubjects();
     }
 
@@ -52,7 +52,9 @@ class Player extends React.Component {
         }).pipe(
             tap(x => {
                 this.setState({ volume: x.volume, url: x.source.url })
-            })).subscribe();
+            }),
+            finalize(() => this.setState({ isLoading: false }))
+        ).subscribe();
     }
 
     handleProgress(val: number) {
@@ -70,6 +72,7 @@ class Player extends React.Component {
     render(): React.ReactNode {
         return (
             <div>
+                <Button className='fullwidth-btn' variant="outlined" href='remote'>Remote</Button>
                 <ReactPlayer
                     playing={this.state.play}
                     ref={e => this.ref(e)}
@@ -78,7 +81,7 @@ class Player extends React.Component {
                     url={this.state.url}
                     onDuration={duration => this.setState({ duration: duration })}
                     onProgress={e => this.handleProgress(e.playedSeconds)} />
-                <Button className='fullscreen-btn' variant="outlined" onClick={() => this.handleFullScreen()}>Fullscreen</Button>
+                <Button className='fullwidth-btn' variant="outlined" onClick={() => this.handleFullScreen()}>Fullscreen</Button>
                 <p>Remember to allow autoplay for this website http://localhost:5000</p>
             </div>
         );

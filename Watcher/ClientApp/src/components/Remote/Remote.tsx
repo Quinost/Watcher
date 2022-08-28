@@ -1,7 +1,8 @@
-import { Slider, styled, TextField } from '@mui/material';
+import { Modal, Slider, styled, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import React from 'react'
 import { forkJoin, tap } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import ApiService from '../../core/api.service';
 import HubService from '../../core/hub.service';
 import Loader from '../Loader/Loader';
@@ -15,7 +16,20 @@ interface RemoteState {
     duration: number;
     currentTime: number;
     sliderTouched: boolean;
+    modalOpen: boolean;
 }
+
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const WaterSlider = styled(Slider)({
     '& .MuiSlider-thumb': {
@@ -49,7 +63,8 @@ class Remote extends React.Component {
         sourceUrl: '',
         duration: 0,
         currentTime: 0,
-        sliderTouched: false
+        sliderTouched: false,
+        modalOpen: false,
     }
 
     constructor(props: any) {
@@ -74,9 +89,9 @@ class Remote extends React.Component {
                 this.setState({
                     volume: x.volume,
                     sourceUrl: x.source.url,
-                    isLoading: false
                 })
-            })
+            }),
+            finalize(() => this.setState({ isLoading: false }))
         ).subscribe()
     }
     async play(): Promise<void> {
@@ -106,6 +121,10 @@ class Remote extends React.Component {
 
     async handleOutFullscreen() {
         await this.apiService.requestOutFullscreen();
+    }
+
+    async handleShutdownWindows() {
+        await this.apiService.shutdownWindows();
     }
 
     timeFormat(value: number) {
@@ -139,11 +158,11 @@ class Remote extends React.Component {
                                 value={this.state.currentTime}
                                 valueLabelDisplay={'auto'}
                                 valueLabelFormat={e => this.timeFormat(e)}
-                                onChange={(_, val) => { this.setState({ currentTime: val }) }}
-                                onMouseUp={() => { this.changeTime() }}
-                                onMouseDown={() => { this.setState({ sliderTouched: true }) }}
-                                onTouchStart={() => { this.setState({ sliderTouched: true }) }}
-                                onTouchEnd={() => { this.changeTime() }} />
+                                onChange={(_, val) => this.setState({ currentTime: val })}
+                                onMouseUp={() => this.changeTime()}
+                                onMouseDown={() => this.setState({ sliderTouched: true })}
+                                onTouchStart={() => this.setState({ sliderTouched: true })}
+                                onTouchEnd={() => this.changeTime()} />
                         </div>
                         <span>{this.timeFormat(this.state.currentTime)}/{this.timeFormat(this.state.duration)}</span>
                         <div className='slider-div'>
@@ -157,7 +176,18 @@ class Remote extends React.Component {
                                 onChange={(_, val) => this.handleVolumeChange(val as number)} />
                         </div>
                         <Button variant="outlined" onClick={() => this.handleOutFullscreen()}>Request out Fullscreen</Button>
+                        <Button onClick={() => this.setState({ modalOpen: true })}>Windows settings</Button>
                     </div>
+                    <Modal
+                        open={this.state.modalOpen}>
+                        <div className='modal-container'>
+                            <div className='buttons-container'>
+                                <Button onClick={() => this.handleShutdownWindows()}>Shutdown</Button>
+                                <br />
+                                <Button className='width-47 self-center' onClick={() => this.setState({ modalOpen: false })}>Close</Button>
+                            </div>
+                        </div>
+                    </Modal>
                 </div>
             );
         }
