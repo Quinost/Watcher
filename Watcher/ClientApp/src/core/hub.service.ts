@@ -1,6 +1,6 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { Subject } from "rxjs";
-import { BaseUrl } from "../http-common";
+import { BaseUrl } from "./http-common";
 import { DurationRequestResponse } from "./models";
 
 export class HubService {

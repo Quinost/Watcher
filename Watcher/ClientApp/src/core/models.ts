@@ -5,4 +5,5 @@ export interface UrlRequestResponse {
 export interface DurationRequestResponse {
     duration: number;
     currentTime: number;
+    infinity: boolean;
 }

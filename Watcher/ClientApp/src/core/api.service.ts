@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BaseUrl } from "../http-common";
+import { BaseUrl } from "./http-common";
 import { UrlRequestResponse } from "./models";
 
 export class ApiService {

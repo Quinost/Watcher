@@ -19,18 +19,6 @@ interface RemoteState {
     modalOpen: boolean;
 }
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
 const WaterSlider = styled(Slider)({
     '& .MuiSlider-thumb': {
         backgroundColor: '#fff',
@@ -78,7 +66,7 @@ class Remote extends React.Component {
         await this.hubService.connect('remote');
         this.hubService.duration$.subscribe(x => {
             if (!this.state.sliderTouched) {
-                this.setState({ duration: x.duration, currentTime: x.currentTime })
+                this.setState({ duration: x.infinity ? Infinity : x.duration, currentTime: x.currentTime })
             }
         });
         forkJoin({
@@ -150,21 +138,26 @@ class Remote extends React.Component {
                         </div>
                         <Button variant="outlined" onClick={() => this.load()}>Load</Button>
                         <span>{this.state.sourceUrl}</span>
-                        <div className='slider-div'>
-                            <WaterSlider aria-label="Time"
-                                min={0}
-                                max={this.state.duration}
-                                step={0.01}
-                                value={this.state.currentTime}
-                                valueLabelDisplay={'auto'}
-                                valueLabelFormat={e => this.timeFormat(e)}
-                                onChange={(_, val) => this.setState({ currentTime: val })}
-                                onMouseUp={() => this.changeTime()}
-                                onMouseDown={() => this.setState({ sliderTouched: true })}
-                                onTouchStart={() => this.setState({ sliderTouched: true })}
-                                onTouchEnd={() => this.changeTime()} />
-                        </div>
-                        <span>{this.timeFormat(this.state.currentTime)}/{this.timeFormat(this.state.duration)}</span>
+                        { this.state.duration === Infinity ?
+                            <span>{this.timeFormat(this.state.currentTime)}</span>
+                            : <React.Fragment>
+                                <div className='slider-div'>
+                                    <WaterSlider aria-label="Time"
+                                        min={0}
+                                        max={this.state.duration}
+                                        step={0.01}
+                                        value={this.state.currentTime}
+                                        valueLabelDisplay={'auto'}
+                                        valueLabelFormat={e => this.timeFormat(e)}
+                                        onChange={(_, val) => this.setState({ currentTime: val })}
+                                        onMouseUp={() => this.changeTime()}
+                                        onMouseDown={() => this.setState({ sliderTouched: true })}
+                                        onTouchStart={() => this.setState({ sliderTouched: true })}
+                                        onTouchEnd={() => this.changeTime()} />
+                                </div>
+                                <span>{this.timeFormat(this.state.currentTime)}/{this.timeFormat(this.state.duration)}</span>
+                            </React.Fragment>
+                        }
                         <div className='slider-div'>
                             <WaterSlider aria-label="Volume"
                                 min={0}

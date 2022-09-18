@@ -7,7 +7,6 @@ import screenfull from 'screenfull'
 import './Player.css'
 import { forkJoin, tap } from 'rxjs';
 import Button from '@mui/material/Button';
-import { finalize } from 'rxjs/operators';
 
 export interface PlayerState {
     play: boolean;
@@ -52,21 +51,17 @@ class Player extends React.Component {
         }).pipe(
             tap(x => {
                 this.setState({ volume: x.volume, url: x.source.url })
-            }),
-            finalize(() => this.setState({ isLoading: false }))
+            })
         ).subscribe();
     }
 
     handleProgress(val: number) {
-        this.hubService.progressUpdate({ duration: this.state.duration, currentTime: val })
+        const isInifity = this.state.duration === Infinity ? true : false;
+        this.hubService.progressUpdate({ duration: isInifity ? 0 : this.state.duration, currentTime: val, infinity: isInifity })
     }
 
     handleFullScreen(): void {
         screenfull.request(findDOMNode(this.player) as Element)
-    }
-
-    ref(player: ReactPlayer | null) {
-        this.player = player
     }
 
     render(): React.ReactNode {
@@ -75,14 +70,15 @@ class Player extends React.Component {
                 <Button className='fullwidth-btn' variant="outlined" href='remote'>Remote</Button>
                 <ReactPlayer
                     playing={this.state.play}
-                    ref={e => this.ref(e)}
+                    ref={player => this.player = player}
                     volume={this.state.volume}
                     muted={false}
                     url={this.state.url}
+                    playsinline={true}
                     onDuration={duration => this.setState({ duration: duration })}
                     onProgress={e => this.handleProgress(e.playedSeconds)} />
                 <Button className='fullwidth-btn' variant="outlined" onClick={() => this.handleFullScreen()}>Fullscreen</Button>
-                <p>Remember to allow autoplay for this website http://localhost:5000</p>
+                <p>Remember to allow autoplay for this website</p>
             </div>
         );
     };

@@ -3,7 +3,7 @@ using Watcher.Singletons;
 
 namespace Watcher.Infrastructure;
 
-public record Time(float Duration, float CurrentTime);
+public record Time(float Duration, float CurrentTime, bool Infinity);
 public interface IPlayerHub
 {
     Task Play();
